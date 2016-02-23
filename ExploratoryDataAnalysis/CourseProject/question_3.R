@@ -28,15 +28,11 @@ NEI <- loadData("summarySCC_PM25.rds")
 # Aggregate the emmissions by year, summing the emmisions values
 SUMMARY = sqldf('select sum(Emissions) as emissions, type, year from NEI where fips = "24510" group by type, year')
 
-# Put the emissions into scale of 10^6 tons (mega-tons)
-SUMMARY$emissions = SUMMARY$emissions/10^6
-
-print(ggplot(SUMMARY,aes(factor(year),emissions, fill=type)) + guides(fill=FALSE) +
+ggplot(SUMMARY,aes(factor(year),emissions/10^3, fill=type)) + guides(fill=FALSE) +
     geom_bar(stat = "identity") +
     facet_grid( . ~ type) +
-    xlab("Year") +
-    ylab("Total PM2.5 emissions (mega-tons)") +
-    labs(title="PM2.5 emissions in Baltimore City between 1999-2008 by source type"))
+    labs(x = "Year", y = "Total PM2.5 emissions (kilo-tons)") +
+    labs(title="PM2.5 emissions in Baltimore City between 1999-2008 by source type")
 
 ggsave("cp2_q3.png", width=10, height=6, dpi = 100)
 
